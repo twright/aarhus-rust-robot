@@ -39,7 +39,8 @@ async fn ros_node_actor(ros_namespace: &str) -> Result<(), r2r::Error> {
     };
 
     debug!("Subscribing to scan");
-    let sub = node.subscribe::<r2r::sensor_msgs::msg::LaserScan>("/scan", sensor_qos.clone())?;
+    let mut sub =
+        node.subscribe::<r2r::sensor_msgs::msg::LaserScan>("/scan", sensor_qos.clone())?;
     debug!("Subscribed to scan");
 
     let fut = async move {
@@ -49,6 +50,11 @@ async fn ros_node_actor(ros_namespace: &str) -> Result<(), r2r::Error> {
             node.spin_once(std::time::Duration::from_millis(10));
         }
     };
+    tokio::spawn(fut);
+
+    while let Some(msg) = sub.next().await {
+        println!("Received scan message: {:?}", msg);
+    }
 
     Ok(())
 }

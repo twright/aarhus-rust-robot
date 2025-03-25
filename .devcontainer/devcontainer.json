@@ -8,8 +8,12 @@
         }
     },
     "workspaceFolder": "/ws",
+    "forwardPorts": [
+        11311
+    ],
     "mounts": [
-        "source=${localWorkspaceFolder}/,target=/ws,type=bind,consistency=cached"
+        "source=${localWorkspaceFolder}/,target=/ws,type=bind,consistency=cached",
+        "source=/dev/shm,target=/dev/shm,type=bind"
     ],
     "customizations": {
         "vscode": {
@@ -41,6 +45,5 @@
                 "rust-lang.rust-analyzer"
             ]
         }
-
     }
 }
