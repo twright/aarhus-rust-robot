@@ -1,0 +1,55 @@
+services:
+  base:
+    image: trustworthiness-checker:base
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: base
+    # command: tmux
+    stdin_open: true
+    ipc: host
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
+      - /dev/shm:/dev/shm
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DISPLAY=${DISPLAY}
+    network_mode: host
+  emqx:
+    image: emqx:latest
+    restart: always
+    environment:
+      EMQX_NAME: emqx
+      EMQX_HOST: 127.0.0.1
+    volumes:
+      - vol-emqx-data:/opt/emqx/data
+      - vol-emqx-etc:/opt/emqx/etc
+      - vol-emqx-log:/opt/emqx/log
+    network_mode: host
+  dev:
+    extends: base
+    depends_on: [ emqx ]
+    network_mode: host
+    image: trustworthiness-checker:dev
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: dev
+      args:
+        - ROS_DISTRO=humble
+        - UID=${UID:-1000}
+        - GID=${UID:-1000}
+        - USERNAME=${USERNAME:-devuser}
+    user: ${USERNAME:-devuser}
+    command: sleep infinity
+    volumes:
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/home/${USERNAME:-devuser}/.Xauthority
+      - /dev/shm:/dev/shm
+volumes:
+  vol-emqx-data:
+    name: tc-emqx-data
+  vol-emqx-etc:
+    name: tc-emqx-etc
+  vol-emqx-log:
+    name: tc-emqx-log
