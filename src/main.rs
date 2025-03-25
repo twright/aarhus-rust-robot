@@ -1,25 +1,16 @@
 use futures::StreamExt;
 use futures::stream::BoxStream;
-use paho_mqtt as mqtt;
-use paho_mqtt::Message;
 use r2r;
 use r2r::Publisher;
 use r2r::QosProfile;
 use r2r::qos::DurabilityPolicy as QosDurabilityPolicy;
 use r2r::qos::HistoryPolicy as QosHistoryPolicy;
 use r2r::qos::ReliabilityPolicy as QosReliabilityPolicy;
-use serde::Deserialize;
-use serde::Serialize;
-use tokio::select;
-use tokio::sync::oneshot;
-use tracing::info;
-// Removed incorrect import of std::fmt::Result.
-use serde::de::{self, Deserializer};
-use std::time::Duration;
 use tracing::debug;
-use tracing::error;
-use tracing::instrument;
-use tracing::warn;
+use tracing_subscriber::EnvFilter;
+use tracing_subscriber::fmt;
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
 use uuid::Uuid;
 
 async fn ros_node_actor(ros_namespace: &str) -> Result<(), r2r::Error> {
