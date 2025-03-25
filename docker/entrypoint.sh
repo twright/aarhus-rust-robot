@@ -14,13 +14,6 @@ fi
 
 export PATH=$HOME/.cargo/bin/:$PATH
 
-sudo groupadd -g $(stat -c "%g" /var/run/docker.sock) docker &> /dev/null
-sudo usermod -aG docker $(id -nu)
-
-# if [ "$EUID" -gt 0 ]; then
-#   sudo chown -R ${UID}:${UID} ~/.ros
-#   sudo chown -R ${UID}:${UID} ~/.ignition
-# fi
 
 # Execute the command passed into this entrypoint
 exec "$@"

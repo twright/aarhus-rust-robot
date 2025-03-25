@@ -47,18 +47,9 @@ RUN echo Defaults secure_path = /opt/ros/humble/bin:/usr/local/sbin:/usr/local/b
     && chmod 0440 /etc/sudoers.d/secure_path
 
 RUN echo "source /opt/entrypoint.sh" >> /root/.profile
-RUN mkdir /opt/ros_ws/ && chown ${USERNAME} /opt/ros_ws/
-COPY --chown=${USERNAME} src/spin_interfaces/ /opt/ros_ws/spin_interfaces/
-RUN printf "\nsource /opt/ros_ws/install/setup.bash" >> "/opt/setup.bash"
-USER ${USERNAME}
-WORKDIR /opt/ros_ws/
-RUN source /opt/entrypoint.sh\
-    && rosdep update\
-    && rosdep install -i --from-path spin_interfaces --rosdistro humble\
-    && colcon build --packages-select spin_interfaces
-USER root
-RUN /bin/bash ./install/setup.sh
 USER ${USERNAME}
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN ~/.cargo/bin/rustup update stable
+RUN sudo ln -s $HOME/.cargo/bin/cargo /usr/bin/cargo
+RUN sudo ln -s $HOME/.cargo/bin/rustc /usr/bin/rustc
 RUN echo "source /opt/entrypoint.sh" >> /home/${USERNAME}/.bashrc

@@ -1,0 +1,46 @@
+{
+    "name": "Rust Aarhus Docker",
+    "build": {
+        "dockerfile": "../docker/Dockerfile",
+        "context": "..",
+        "args": {
+            "ROS_DISTRO": "humble"
+        }
+    },
+    "workspaceFolder": "/ws",
+    "mounts": [
+        "source=${localWorkspaceFolder}/,target=/ws,type=bind,consistency=cached"
+    ],
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "/bin/bash"
+                    }
+                },
+                "rust-analyzer.runnables.extraEnv": {
+                    "ROS_VERSION": 2,
+                    "ROS_PYTHON_VERSION": 3,
+                    "ROS_DISTRO": "humble",
+                    "LD_LIBRARY_PATH": "/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib",
+                    "AMENT_PREFIX_PATH": "/opt/ros/humble",
+                    "PATH": "/opt/ros/humble/bin:/home/${USER}/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                },
+                "rust-analyzer.server.extraEnv": {
+                    "ROS_VERSION": 2,
+                    "ROS_PYTHON_VERSION": 3,
+                    "ROS_DISTRO": "humble",
+                    "LD_LIBRARY_PATH": "/opt/ros_ws/install/spin_interfaces/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib",
+                    "AMENT_PREFIX_PATH": "/opt/ros_ws/install/spin_interfaces:/opt/ros/humble",
+                    "PATH": "/opt/ros/humble/bin:/home/${USER}/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                }
+            },
+            "extensions": [
+                "rust-lang.rust-analyzer"
+            ]
+        }
+
+    }
+}
